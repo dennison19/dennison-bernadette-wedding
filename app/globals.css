@@ -1,0 +1,132 @@
+:root {
+  --champagne: #f7e6b5;
+  --antique-gold: #b98a35;
+  --burnished-gold: #8f6427;
+  --ivory: #fff8ea;
+  --porcelain: #fffdf7;
+  --deep-olive: #284238;
+  --ink: #2d2418;
+  --rose-clay: #9f6b5f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    linear-gradient(115deg, rgba(255, 253, 247, 0.96), rgba(247, 230, 181, 0.5)),
+    radial-gradient(circle at 18% 20%, rgba(185, 138, 53, 0.18), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(40, 66, 56, 0.16), transparent 24%),
+    var(--ivory);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.invitation-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.invitation-shell::before {
+  background-image:
+    linear-gradient(rgba(143, 100, 39, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(143, 100, 39, 0.08) 1px, transparent 1px);
+  background-size: 42px 42px;
+  content: "";
+  inset: 0;
+  mask-image: linear-gradient(to bottom, black, transparent 70%);
+  pointer-events: none;
+  position: absolute;
+}
+
+.gold-line {
+  background: linear-gradient(90deg, transparent, var(--antique-gold), transparent);
+  height: 1px;
+  width: min(340px, 70vw);
+}
+
+.floral-frame {
+  border: 1px solid rgba(185, 138, 53, 0.42);
+  box-shadow: 0 24px 80px rgba(84, 55, 21, 0.16);
+  position: relative;
+}
+
+.floral-frame::before,
+.floral-frame::after {
+  border: 1px solid rgba(185, 138, 53, 0.35);
+  content: "";
+  inset: 14px;
+  pointer-events: none;
+  position: absolute;
+}
+
+.floral-frame::after {
+  inset: 26px;
+  opacity: 0.56;
+}
+
+.venue-image {
+  aspect-ratio: 4 / 3;
+  background:
+    linear-gradient(180deg, rgba(45, 36, 24, 0.03), rgba(45, 36, 24, 0.12)),
+    url("/venue.jfif"),
+    linear-gradient(145deg, rgba(247, 230, 181, 0.86), rgba(255, 253, 247, 0.95));
+  background-position: center;
+  background-size: cover;
+  border: 1px solid rgba(185, 138, 53, 0.38);
+  box-shadow: 0 18px 48px rgba(84, 55, 21, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 260px;
+  overflow: hidden;
+}
+
+.venue-image span {
+  background: linear-gradient(90deg, rgba(255, 253, 247, 0.92), rgba(247, 230, 181, 0.88));
+  color: var(--burnished-gold);
+  display: block;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 1.5px;
+  padding: 14px 16px;
+  text-transform: uppercase;
+}
+
+.scroll-reveal {
+  height: 100%;
+  opacity: 0;
+  transform: translateY(34px);
+  transition:
+    opacity 720ms ease,
+    transform 720ms ease;
+  will-change: opacity, transform;
+}
+
+.scroll-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
