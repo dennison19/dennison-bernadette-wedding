@@ -982,7 +982,11 @@ export default function Home() {
                       sx={{
                         ...goldText,
                         fontFamily: scriptFamily,
-                        fontSize: { xs: "4.2rem", sm: "6rem", md: "8.5rem" },
+                        fontSize: {
+                          xs: "3.35rem",
+                          sm: "5.5rem",
+                          md: "8.5rem",
+                        },
                         lineHeight: 1.2,
                       }}
                     >
@@ -1035,7 +1039,11 @@ export default function Home() {
                       sx={{
                         ...goldText,
                         fontFamily: scriptFamily,
-                        fontSize: { xs: "4.2rem", sm: "6rem", md: "8.5rem" },
+                        fontSize: {
+                          xs: "3.35rem",
+                          sm: "5.5rem",
+                          md: "8.5rem",
+                        },
                         lineHeight: 1.2,
                       }}
                     >
