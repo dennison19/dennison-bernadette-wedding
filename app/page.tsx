@@ -2,13 +2,18 @@
 
 import { useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   Paper,
   Stack,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   IconButton,
 } from "@mui/material";
@@ -344,6 +349,184 @@ function Countdown() {
               mt: 4,
             }}
           />
+        </Paper>
+      </Box>
+    </ScrollReveal>
+  );
+}
+
+function RsvpForm() {
+  const [name, setName] = useState("");
+  const [attending, setAttending] = useState<"yes" | "no" | null>(null);
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleSubmit = async () => {
+    if (name.trim().length < 2) {
+      setStatus("error");
+      setErrorMsg("Please enter your full name.");
+      return;
+    }
+    if (!attending) {
+      setStatus("error");
+      setErrorMsg("Please let us know if you can attend.");
+      return;
+    }
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), attending }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Failed to submit");
+      }
+      setStatus("success");
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
+    }
+  };
+
+  return (
+    <ScrollReveal>
+      <Box id="rsvp" component="section" sx={{ pb: { xs: 5, md: 7 } }}>
+        <Paper
+          elevation={0}
+          sx={{
+            background:
+              "linear-gradient(150deg, rgba(255,253,247,0.98), rgba(247,230,181,0.62))",
+            border: "1px solid rgba(185,138,53,0.34)",
+            p: { xs: 3, sm: 5, md: 6 },
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            component="p"
+            sx={{
+              color: "primary.main",
+              fontFamily: "'Trebuchet MS', sans-serif",
+              fontSize: "0.78rem",
+              letterSpacing: 2,
+              mb: 1.5,
+              textTransform: "uppercase",
+            }}
+          >
+            Kindly Reply
+          </Typography>
+
+          <Typography
+            component="h2"
+            sx={{
+              color: "secondary.main",
+              fontSize: { xs: "2.4rem", md: "4rem" },
+              lineHeight: 1,
+              mb: 1.5,
+            }}
+          >
+            RSVP
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "text.secondary",
+              fontFamily: "'Trebuchet MS', sans-serif",
+              mb: 4,
+            }}
+          >
+            Please let us know if you can join us on December 5, 2026.
+          </Typography>
+
+          {status === "success" ? (
+            <Stack spacing={1} sx={{ py: 3 }}>
+              <Typography
+                sx={{
+                  color: "primary.main",
+                  fontSize: { xs: "1.6rem", md: "2rem" },
+                }}
+              >
+                Thank you, {name.trim().split(" ")[0]}! 🤍
+              </Typography>
+              <Typography
+                sx={{
+                  color: "text.secondary",
+                  fontFamily: "'Trebuchet MS', sans-serif",
+                }}
+              >
+                {attending === "yes"
+                  ? "We can't wait to celebrate with you."
+                  : "We'll miss you, but thank you for letting us know."}
+              </Typography>
+            </Stack>
+          ) : (
+            <Stack spacing={3} sx={{ maxWidth: 480, mx: "auto" }}>
+              <TextField
+                label="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+                disabled={status === "loading"}
+                slotProps={{ htmlInput: { maxLength: 100 } }}
+              />
+
+              <ToggleButtonGroup
+                exclusive
+                fullWidth
+                value={attending}
+                onChange={(_, value) => value && setAttending(value)}
+                disabled={status === "loading"}
+                sx={{
+                  "& .MuiToggleButton-root": {
+                    fontFamily: "'Trebuchet MS', sans-serif",
+                    textTransform: "none",
+                    py: 1.4,
+                    borderColor: "rgba(185,138,53,0.45)",
+                    color: "text.secondary",
+                  },
+                  "& .Mui-selected, & .Mui-selected:hover": {
+                    bgcolor: "primary.main",
+                    color: "#fffdf7",
+                  },
+                }}
+              >
+                <ToggleButton value="yes">Joyfully accepts</ToggleButton>
+                <ToggleButton value="no">Regretfully declines</ToggleButton>
+              </ToggleButtonGroup>
+
+              {status === "error" && <Alert severity="error">{errorMsg}</Alert>}
+
+              <Button
+                onClick={handleSubmit}
+                variant="contained"
+                disabled={status === "loading"}
+                sx={{
+                  bgcolor: "primary.main",
+                  boxShadow: "0 14px 32px rgba(143,100,39,0.28)",
+                  fontFamily: "'Trebuchet MS', sans-serif",
+                  py: 1.35,
+                  "&:hover": { bgcolor: "#9f742d" },
+                }}
+              >
+                {status === "loading" ? (
+                  <CircularProgress size={22} sx={{ color: "#fffdf7" }} />
+                ) : (
+                  "Send RSVP"
+                )}
+              </Button>
+            </Stack>
+          )}
         </Paper>
       </Box>
     </ScrollReveal>
@@ -1096,6 +1279,9 @@ export default function Home() {
                     }}
                   >
                     View Wedding Details
+                  </Button>
+                  <Button href="#rsvp" variant="outlined" sx={{}}>
+                    RSVP
                   </Button>
 
                   <Box
@@ -2039,6 +2225,8 @@ export default function Home() {
                   </Stack>
                 </Box>
               </ScrollReveal>
+
+              <RsvpForm />
 
               {/* FOOTER */}
               <Box
